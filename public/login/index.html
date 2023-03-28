@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+  </head>
+  <body>
+    <form name="login">
+      NIM:
+      <input type="text" name="nim" />
+      Kata sandi:
+      <input type="password" name="password" />
+      <button>Login</button>
+    </form>
+    <script>
+      document.login.onsubmit = (e) => {
+        e.preventDefault();
+        const nim = document.login.nim.value;
+        const password = document.login.password.value;
+        fetch("/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nim,
+            password,
+          }),
+        }).then(async (response) => {
+          if (response.ok) {
+            location.href = "/";
+          } else {
+            const message = await response.text();
+            alert(message);
+          }
+        });
+      };
+    </script>
+  </body>
+</html>

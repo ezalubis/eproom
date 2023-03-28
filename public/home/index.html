@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME</title>
+    <style>
+    nav {
+        width: 100%;
+        background-color: rgb(0,0,0);
+        color: white;
+        transition: width 0.25s;
+    }
+  
+  body {
+    margin: 0
+  }
+  
+  ol {
+    width: 100%;
+    display: flex; 
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+  }
+  
+  .b1{
+    width: 100%;
+    padding: 1rem;
+    background-color: black;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 0px;
+  }
+  .open-nav {
+    display: none;
+  }
+  .b1:hover{
+    background-color: red;
+  }
+  @media only screen and (min-width: 601px) {
+      .nav-link {
+          display: "block";
+      }
+      nav {
+          width: 100%;
+          min-height: 3rem;
+      }
+  }
+  @media only screen and (max-width: 600px){
+    .open-nav {
+      display: flex;
+    }
+    nav {
+      min-height: 100vh;
+      width: 32px;
+    }
+    @keyframes change_width {
+        from { width: 32px }
+        to { width: 33% }
+    }
+    nav:hover {
+        width: 33%;
+        /* animation: change_width 2s linear; */
+    }
+    nav:hover li {
+        display: block;
+    }
+    ol{
+      display: block;
+    }
+    li{
+      width:100%;
+      display: none;
+    }
+    .b1 {
+      text-align: left;
+    }
+  }
+  </style>
+</head>
+<body>
+  </head>
+  <body>
+  <nav>
+    <ol>
+      <li class="nav-link"><button class="b1">Login</button></li>
+      <li class="nav-link"><button class="b1">Logout</button></li>
+      <li class="nav-link"><button class="b1">Create Class</button></li>
+      <li class="nav-link"><button class="b1">Join Class</button></li>
+    </ol>
+  </nav>
+    
+</body>
+</html>

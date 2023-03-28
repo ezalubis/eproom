@@ -1,0 +1,27 @@
+{
+  "name": "classep",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ClassEP"
+  },
+  "keywords": [
+    "classep"
+  ],
+  "author": "Azhari Fahreza",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.10.0"
+  },
+  "type": "module"
+}
