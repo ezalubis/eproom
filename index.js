@@ -10,51 +10,50 @@ import cookieParser from "cookie-parser";
 import bcrypt from "bcryptjs";
 
 const app = express();
-app.use(express.static("public"));
 
 // MIDDLEWARE
-
 // Untuk mengelola cookie
 app.use(cookieParser());
 
+
 // // Untuk memeriksa otorisasi
-// app.use((req, res, next) => {
-//   if (req.path.startsWith("/api/login") || req.path.startsWith("/assets")) {
-//     next();
-//   } else {
-//     let authorized = false;
-//     if (req.cookies.token) {
-//       try {
-//         jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-//         authorized = true;
-//       } catch (err) {
-//         res.setHeader("Cache-Control", "no-store"); // khusus Vercel
-//         res.clearCookie("token");
-//       }
-//     }
-//     if (authorized) {
-//       if (req.path.startsWith("/login")) {
-//         res.redirect("/");
-//       } else {
-//         next();
-//       }
-//     } else {
-//       if (req.path.startsWith("/login")) {
-//         next();
-//       } else {
-//         if (req.path.startsWith("/api")) {
-//           res.status(401);
-//           res.send("Anda harus login terlebih dahulu.");
-//         } else {
-//           res.redirect("/login");
-//         }
-//       }
-//     }
-//   }
-// });
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api/login") || req.path.startsWith("/assets")) {
+    next();
+  } else {
+    let authorized = false;
+    if (req.cookies.token) {
+      try {
+        jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+        authorized = true;
+      } catch (err) {
+        res.setHeader("Cache-Control", "no-store"); // khusus Vercel
+        res.clearCookie("token");
+      }
+    }
+    if (authorized) {
+      if (req.path.startsWith("/login")) {
+        res.redirect("/");
+      } else {
+        next();
+      }
+    } else {
+      if (req.path.startsWith("/login")) {
+        next();
+      } else {
+        if (req.path.startsWith("/api")) {
+          res.status(401);
+          res.send("Anda harus login terlebih dahulu.");
+        } else {
+          res.redirect("/login");
+        }
+      }
+    }
+  }
+});
 
 // Untuk mengakses file statis
-// app.use(express.static("public"));
+app.use(express.static("public"));
 
 // Untuk mengakses file statis (khusus Vercel)
 // import path from "path";
@@ -66,10 +65,11 @@ app.use(express.json());
 
 // ROUTE OTORISASI
 
+
 // Login (dapatkan token)
 app.post("/api/login", async (req, res) => {
   const results = await client.query(
-    `SELECT * FROM data_class WHERE ruangan = '${req.body.ruangan}'`
+    `SELECT * FROM pendaftar WHERE nama = '${req.body.nama}'`
   );
   if (results.rows.length > 0) {
     if (await bcrypt.compare(req.body.password, results.rows[0].password)) {
@@ -84,6 +84,14 @@ app.post("/api/login", async (req, res) => {
     res.status(401);
     res.send("Mahasiswa tidak ditemukan.");
   }
+});
+app.post("/api/regis",async(req,res)=>{
+  const salt = await bcrypt.genSalt();
+  const hash = await bcrypt.hash(req.body.password, salt);
+  await client.query(
+    `INSERT INTO pendaftar (nama,password) VALUES ('${req.body.nama}','${hash}')`
+  );
+  res.send("Berhasil Daftar");
 });
 
 app.get("/api/class",async (_req,res)=>{

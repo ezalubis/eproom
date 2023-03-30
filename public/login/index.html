@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device.width,initial-scale=1.0" />
     <title>Login</title>
-    <link rel="stylesheet" href="/assets/style.css" />
+    <link rel="stylesheet" href="/login/style.css" />
   </head>
   <body>
-    <form name="login">
-      NIM:
-      <input type="text" name="nim" />
-      Kata sandi:
-      <input type="password" name="password" />
-      <button>Login</button>
-    </form>
+    <div class="blob"></div>
+    <div class="wrapper">
+      <form name="login">
+        <h2>Login</h2>
+        <div class="input-box">
+          <input type="text" name="nama" required />
+          <label>Username</label>
+        </div>
+        <div class="input-box">
+          <input type="password" name="password" required />
+          <label>Password</label>
+        </div>
+        <button type="submit">Login</button>
+        <div class="register-link">
+          <p>Don't have an account? <a href="/register">Register</a></p>
+        </div>
+      </form>
+    </div>
     <script>
       document.login.onsubmit = (e) => {
         e.preventDefault();
-        const nim = document.login.nim.value;
+        const nama = document.login.nama.value;
         const password = document.login.password.value;
         fetch("/api/login", {
           method: "POST",
@@ -26,12 +37,12 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            nim,
+            nama,
             password,
           }),
         }).then(async (response) => {
           if (response.ok) {
-            location.href = "/";
+            location.href = "/home";
           } else {
             const message = await response.text();
             alert(message);

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device.width,initial-scale=1.0" />
+    <title>Daftar</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="blob"></div>
+    <div class="wrapper">
+      <form name="daftar">
+        <h2>Login</h2>
+        <div class="input-box">
+          <input type="text" name="nama" required />
+          <label>Username</label>
+        </div>
+        <div class="input-box">
+          <input type="password" name="password" required />
+          <label>Password</label>
+        </div>
+        <button type="submit">Daftar</button>
+      </form>
+    </div>
+    <script>
+      document.daftar.onsubmit = async(e) => {
+                e.preventDefault();
+                await fetch("/api/regis", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        nama: document.daftar.nama.value,
+                        password: document.daftar.password.value
+                    }),
+                });
+                location.href = "/login";
+            };
+    </script>
+  </body>
+</html>
