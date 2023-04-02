@@ -40,17 +40,6 @@ h2 {
     border-bottom: 2px solid #fff;
 }
 
-.input-box label {
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    transition: .5s;
-}
-
-.input-box input:focus~label,
-.input-box input:valid~label {
-    top: 5px;
-}
 
 .input-box input {
     width: 100%;

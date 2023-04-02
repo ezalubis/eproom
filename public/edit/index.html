@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Class</title>
+    <style>
+    	* {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+body{
+    
+    background-image: url("/assets/background.jpg");
+}
+.hero {
+	height: 100%;
+	width: 100%;
+	background: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4));
+	background-position: center;
+	background-size: cover;
+	position: absolute;
+}
+.form-box {
+	width: 380px;
+	height: 480px;
+	position: relative;
+	margin: 6% auto;
+	background: #FFF;
+	padding: 5px;
+	overflow: hidden;
+}
+.button-box {
+	width: 220px;
+	margin: 35px auto;
+	position: relative;
+	box-shadow: 0 0 20px 9px #ff61241f;
+	border-radius: 30px;
+}
+.toggle-btn {
+	padding: 10px 30px;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	outline: none;
+	position: relative;
+}
+#btn {
+	top: 0;
+	left: 0;
+	position: absolute;
+	width: 220px;
+	height: 100%;
+	background: linear-gradient(to right, #ff105f, #ffad06);
+	border-radius: 30px;
+}
+
+.input-group {
+	top: 100px;
+    right: 55px;
+	position: absolute;
+	width: 280px;
+}
+
+.input-field {
+	width: 100%;
+	padding: 5px 0;
+    /* align-items: center; */
+	margin: 5px 0;
+	border-left: 0;
+	border-top: 0;
+	border-right: 0;
+	border-bottom: 1px solid #999;
+	outline: none;
+	background: transparent;
+}
+.check-box {
+	margin: 10px 10px 30px 0;
+}
+.submit-btn {
+	width: 85%;
+	padding: 10px 30px;
+	cursor: pointer;
+	display: block;
+	margin:  auto;
+	background: linear-gradient(to right, #ff105f, #ffad06);
+	border-radius: 30px;
+}
+span {
+	color: #777;
+	font-size: 12px;
+	bottom: 68px;
+	position: absolute;
+	
+}
+    </style>
+</head>
+<body>
+	<div class="hero">
+		<div class="form-box">
+			<div class="button-box">
+				<div id="btn"></div>
+				<button type="button" class="toggle-btn">Create Class</button>
+            </div>
+			<form name="edit" class="input-group">
+				<input type="text" class="input-field" placeholder="Class Name" name="cn" required />
+				<input type="text" class="input-field" placeholder="Your Name" name="yn"  required />
+				<input type="text" class="input-field" placeholder="Subjects" name="s"  required />
+				<input type="text" class="input-field" placeholder="Room Name" name="rn"  required />
+				<input type="text" class="input-field" placeholder="Password" name="ps"  required />
+				<input type="text" class="input-field" placeholder="Room Number" name="rnu"  required />
+				<input type="text" class="input-field" placeholder="Code Class" name="cc"  required />
+				<input type="checkbox" class="check-box" />
+				<button class="submit-btn">Edit</button>
+                <a href="/">Back To Home</a>
+			</form>
+		</div>
+	</div>	
+    <script>
+        document.edit.onsubmit = (e) => {
+          e.preventDefault();
+        const searchParams = new URLSearchParams(location.search);
+
+        fetch(`/api/class/${searchParams.get("nama_kelas")}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                document.edit.cn.value = data.nama_kelas,
+                document.edit.yn.value = data.nama_pengajar
+                document.edit.s.value = data.mata_pelajaran,
+                document.edit.rn.value = data.ruangan,
+                document.edit.ps.value = data.password,
+                document.edit.rnu.value = data.no_ruangan,
+                document.edit.cc.value = data.code_class
+            });
+            console.log(searchParams.get("nama_kelas"));
+
+          fetch(`/api/class/${searchParams.get("nama_kelas")}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nama_kelas : document.edit.cn.value,
+                nama_pengajar : document.edit.yn.value,
+                mata_pelajaran : document.edit.s.value,
+                ruangan : document.edit.rn.value,
+                password : document.edit.ps.value,
+                no_ruangan : document.edit.rnu.value,
+                code_class : document.edit.cc.value
+            }),
+          }).then(async (response) => {
+            if (response.ok) {
+              location.href = "/";
+            } else {
+              const message = await response.text();
+              alert(message);
+            }
+          });
+        };
+    </script>
+</body>
+</html>

@@ -2,20 +2,32 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-
+import multer from "multer";
 import { client } from "./db.js";
 
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import bcrypt from "bcryptjs";
+// const searchParams = new URLSearchParams(location.search);
+// console.log(searchParams.get("nama_pengajar"));
 
 const app = express();
+
+const upload = multer({ dest: "public/asse" });
+
 
 // MIDDLEWARE
 // Untuk mengelola cookie
 app.use(cookieParser());
-
-
+app.use(express.json());
+app.post("/api/register",async(req,res)=>{
+  const salt = await bcrypt.genSalt();
+  const hash = await bcrypt.hash(req.body.password, salt);
+  await client.query(
+    `INSERT INTO pendaftar (nama,password) VALUES ('${req.body.nama}','${hash}')`
+  );
+  res.send("Berhasil Daftar");
+});
 // // Untuk memeriksa otorisasi
 app.use((req, res, next) => {
   if (req.path.startsWith("/api/login") || req.path.startsWith("/assets")) {
@@ -33,12 +45,12 @@ app.use((req, res, next) => {
     }
     if (authorized) {
       if (req.path.startsWith("/login")) {
-        res.redirect("/");
+        res.redirect("/home");
       } else {
         next();
       }
     } else {
-      if (req.path.startsWith("/login")) {
+      if (req.path.startsWith("/login") || req.path.startsWith("/register")) {
         next();
       } else {
         if (req.path.startsWith("/api")) {
@@ -55,18 +67,26 @@ app.use((req, res, next) => {
 // Untuk mengakses file statis
 app.use(express.static("public"));
 
-// Untuk mengakses file statis (khusus Vercel)
-// import path from "path";
-// const __dirname = path.dirname(new URL(import.meta.url).pathname);
-// app.use(express.static(path.resolve(__dirname, "public")));
+// // Untuk mengakses file statis (khusus Vercel)
+// // import path from "path";
+// // const __dirname = path.dirname(new URL(import.meta.url).pathname);
+// // app.use(express.static(path.resolve(__dirname, "public")));
 
 // Untuk membaca body berformat JSON
-app.use(express.json());
+// app.use(express.json());
 
 // ROUTE OTORISASI
 
 
 // Login (dapatkan token)
+// app.post("/api/register",async(req,res)=>{
+//   const salt = await bcrypt.genSalt();
+//   const hash = await bcrypt.hash(req.body.password, salt);
+//   await client.query(
+//     `INSERT INTO pendaftar (nama,password) VALUES ('${req.body.nama}','${hash}')`
+//   );
+//   res.send("Berhasil Daftar");
+// });
 app.post("/api/login", async (req, res) => {
   const results = await client.query(
     `SELECT * FROM pendaftar WHERE nama = '${req.body.nama}'`
@@ -85,20 +105,12 @@ app.post("/api/login", async (req, res) => {
     res.send("Mahasiswa tidak ditemukan.");
   }
 });
-app.post("/api/regis",async(req,res)=>{
-  const salt = await bcrypt.genSalt();
-  const hash = await bcrypt.hash(req.body.password, salt);
-  await client.query(
-    `INSERT INTO pendaftar (nama,password) VALUES ('${req.body.nama}','${hash}')`
-  );
-  res.send("Berhasil Daftar");
-});
 
-app.get("/api/class",async (_req,res)=>{
-    const results= await client.query("SELECT * FROM data_class ORDER BY no_ruangan");
+app.get("/api/class/:nama_pengajar",async (req,res)=>{
+    const results= await client.query(`SELECT * FROM data_class where nama_pengajar ='${req.params.nama_pengajar}' ORDER BY no_ruangan `);
     res.json(results.rows);
 });
-app.post("/api/class",async(req,res)=>{
+app.post("/api/class",async (req,res)=>{ 
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(req.body.password, salt);
     const hash2 = await bcrypt.hash(req.body.code_class, salt);
@@ -119,7 +131,11 @@ app.delete("/api/class/:nama_kelas", async(req,res)=>{
     const results= await client.query(`DELETE FROM data_class WHERE nama_kelas='${req.params.nama_kelas}'`);
     res.send("Class Berhasil Dihapus");
 });
-
+app.get("/api/logout",(req,res)=> {
+  res.setHeader("Cache-Control", "no-store");
+  res.clearCookie("token");
+  res.send("Logout berhasil.");
+})
 
 app.listen(3002,()=>{
     console.log("gasskeunnn");

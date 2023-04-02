@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device.width,initial-scale=1.0" />
     <title>Login</title>
-    <link rel="stylesheet" href="/login/style.css" />
+    <link rel="stylesheet" href="/assets/style.css" />
   </head>
   <body>
     <div class="blob"></div>
@@ -13,12 +13,10 @@
       <form name="login">
         <h2>Login</h2>
         <div class="input-box">
-          <input type="text" name="nama" required />
-          <label>Username</label>
+          <input type="text" name="nama" placeholder="Username" required />
         </div>
         <div class="input-box">
-          <input type="password" name="password" required />
-          <label>Password</label>
+          <input type="password" name="password" placeholder="Password" required />
         </div>
         <button type="submit">Login</button>
         <div class="register-link">
@@ -42,7 +40,7 @@
           }),
         }).then(async (response) => {
           if (response.ok) {
-            location.href = "/home";
+            location.href = "/";
           } else {
             const message = await response.text();
             alert(message);

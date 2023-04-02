@@ -5,28 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device.width,initial-scale=1.0" />
     <title>Daftar</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/assets/style.css" />
   </head>
   <body>
     <div class="blob"></div>
     <div class="wrapper">
       <form name="daftar">
-        <h2>Login</h2>
+        <h2>Daftar</h2>
         <div class="input-box">
-          <input type="text" name="nama" required />
-          <label>Username</label>
+          <input type="text" name="nama" placeholder="Username" required />
         </div>
         <div class="input-box">
-          <input type="password" name="password" required />
-          <label>Password</label>
+          <input type="password" name="password" placeholder="Password" required />
         </div>
         <button type="submit">Daftar</button>
+        <div class="register-link">
+          <p>have an account? <a href="/login">Login</a></p>
+        </div>
       </form>
     </div>
     <script>
       document.daftar.onsubmit = async(e) => {
                 e.preventDefault();
-                await fetch("/api/regis", {
+                await fetch("/api/register", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -35,9 +36,15 @@
                         nama: document.daftar.nama.value,
                         password: document.daftar.password.value
                     }),
-                });
-                location.href = "/login";
-            };
+                }).then(async (response) => {
+                  if (response.ok) {
+                    location.href = "/login";
+                  } else {
+                    const message = await response.text();
+                    alert(message);
+                  }
+              });
+            }
     </script>
   </body>
 </html>
