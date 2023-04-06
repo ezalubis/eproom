@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orang</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container{
+            padding-top: 100px;
+            padding-left: 550px;
+            display: flex;
+            flex-direction: column;
+        }
+        .pengajar{
+            max-width: 500px;
+            height: 150px;
+        }
+        .murid{
+            max-width: 500px;
+            height: 200px;
+        }
+        .shiina{
+            position: fixed;
+            top: 120px;
+        }
+        .koro{
+            position: fixed;
+            top: 110px;
+            left: 750px;
+        }
+    </style>
+</head>
+<body>  
+    <ul>
+        <div id="atas">
+            <li><a href="../../">TUGAS</a></li>
+            <div><a href="/pengajar"><img src="/assets/ep.png" class="logo"></a></div>
+            <li><a href="/pengajar/orang">ORANG</a></li>
+        </div>
+    </ul>
+    <div class="shiina"><img src="/assets/shiina.png"></div>
+    <div class="container">
+        <div class="pengajar">
+            <h1>PENGAJAR : </h1>
+        </div>
+        <div class="murid">
+            <h1>SISWA :</h1>
+        </div>
+    </div>
+    <div class="koro"><img src="/assets/koro.png"></div>
+    <script>
+        fetch("/api/class/home/pengajar")
+            .then((response) => response.json())
+              .then((data) =>{
+                data.forEach((d)=>{
+                    const nama = document.createElement("h2");
+                    nama.textContent = d.nama_pengajar;
+                    document.querySelector(".pengajar").appendChild(nama);
+                });
+              });
+        fetch("/api/me")
+            .then((response) => response.json())
+              .then((data) =>{
+                data.forEach((d)=>{
+                    const siswa = document.createElement("h2");
+                    siswa.textContent = d.nama;
+                    document.querySelector(".murid").appendChild(siswa);
+                });
+              });
+    </script>
+</body>
+</html>

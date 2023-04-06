@@ -1,0 +1,134 @@
+
+        body {
+            margin:0;
+        }    
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            /* padding-left: 480px; */
+            overflow: hidden;
+            background-color: rgb(169,23,23);
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+        
+        li {
+            float: left;
+        }
+        #atas{
+            display: flex;
+            flex-wrap: nowrap;
+            padding-left: 480px;
+        }
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            width: 100px;
+        }
+        
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+        
+        .active {
+            background-color: #04AA6D;
+        }
+        .logo{
+            max-width: 100px;
+        }
+        .cont{
+            display: flex;
+            justify-content: center;
+        }
+        .judul{
+            background-image: url("/assets/walpaper.jpg");
+            display: flex;
+            width: 81%;
+            height: 150px;;
+            margin-top: 100px;
+            padding-top: 100px;
+            border-radius: 5px;
+            gap: 190px;
+        }
+        .judul > img{
+            position: relative;
+            bottom: 90px;
+            left: 790px;
+        }
+
+        .code{
+            border: 2px solid;
+            max-width: 150px;
+            height: 150px;
+            background-color: black;
+            color: white;
+            position: absolute;
+            left: 130px;
+            right: 130px;
+            border-radius: 5px;
+        }
+        .penginput{
+            margin-top: 2px;
+            border-radius: 5px;
+            border: 2px solid;
+            max-width: 925px;
+            height: 150px;
+            background-color: white;
+            position: relative;
+            left: 300px;
+            right: 130px;
+            margin-bottom: 20px;
+        }
+        .guru{
+            position: absolute;
+            max-width: 150px;
+            height: 150px;
+        }
+        #text{
+            position: absolute;
+            left: 0px;
+            top: 30px;
+            width: 900px;
+            border: transparent;
+            height: 50px;
+        }
+        label{
+            position: absolute;
+            top: 120px;
+            left: 550px;
+        } 
+        h2{
+            position: absolute;
+            top: -20px;
+        }
+        .code > h1{
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+        .divP{
+            display: flex;
+            flex-direction: row;
+            color: white;
+            margin-top: 90px;
+            margin-left: -380px;
+        }
+        .divP2{
+            display: flex;
+            flex-direction: row;
+            color: white;
+            margin-top: 90px;
+            padding-left: 450px;
+        }
+        .judul > img{
+            margin-left: 150px;
+            width: 50px;
+            height: 50px;
+        }

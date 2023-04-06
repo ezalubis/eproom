@@ -141,15 +141,91 @@
       <li class="nav-link"><button class="b1"><img src="/assets/ep.png" id="logo"></button></li>
       <li class="nav-link"> <button class="b1" id="logout"><img src="/assets/logout.png" id="logo"></button></li>
       <li class="nav-link"><a href="/tambah"><button class="b1" id="plus"><img src="/assets/plus.png" id="logo"></button></a></li>
-      <li class="nav-link"><button class="b1"><img src="/assets/join.png" id="logo"></button></li>
+      <li class="nav-link"><button class="b1" id="join"><img src="/assets/join.png" id="logo"></button></li>
     </ol>
   </nav>
   <div id="container"></div>
     
     <script>
+      const searchParams = new URLSearchParams(location.search);
         const tambahclass = document.querySelector("tambahclass");
         const logout = document.querySelector("#logout");
+        const join = document.querySelector("#join");
+        
+        join.onclick=(e)=>{
+          const userInput = prompt("Masukkan code kelas : ");
+          join.value = userInput;
+          e.preventDefault();
+          fetch("/api/join", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                code_class : join.value
+            }),
+          }).then(async (response) => {
+            if (response.ok) {
+              location.href = "/";
+            } else {
+              const message = await response.text();
+              alert(message);
+            }
+          });
+        };
+        
+        fetch(`/api/class/home`)
+          .then((response)=> response.json())
+            .then((kelas) => {
+              console.log(kelas);
+                kelas.forEach((k)=> {
+                  console.log(kelas);
+                  const div1 = document.createElement("div");
+                  div1.className = "card";
+                  const atas = document.createElement("img");
+                  atas.src='/assets/atas.jpg';
+                  const namaKelas= document.createElement("a");
+                  namaKelas.textContent=k.nama_kelas;
+                  namaKelas.href="/murid";
+                  const pelajaran= document.createElement("a");
+                  pelajaran.textContent=k.mata_pelajaran;
+                  const ruangan= document.createElement("a");
+                  ruangan.textContent=`(${k.ruangan})`;
+                  const bawah = document.createElement("img");
+                  bawah.src='/assets/bawah.jpg'; 
 
+                  const cardButton = document.createElement("div");
+                  const dlt = document.createElement("button");
+                  const dltText= document.createElement("a");
+                  dltText.textContent = "Leave";
+                  dlt.onclick = () => {
+                        if (
+                            confirm(
+                                `Apakah Anda yakin ingin Keluar dari kelas ${k.nama_kelas} (${k.nama_pengajar})?`
+                            )
+                        ) {
+                            fetch(`/api/user/${k.code_class}`, {
+                                method: "DELETE",
+                                headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                },
+                            });
+                            location.reload();
+                        }
+                    };
+
+                  dlt.appendChild(dltText);
+                  cardButton.appendChild(dlt);
+
+                  div1.appendChild(atas);
+                  div1.appendChild(namaKelas);
+                  div1.appendChild(ruangan);
+                  div1.appendChild(pelajaran);   
+                  div1.appendChild(bawah);
+                  document.querySelector("#container").appendChild(div1);
+                  document.querySelector("#container").appendChild(cardButton);
+                });
+            });
         logout.onclick = ()=>{
           fetch("/api/logout").then((response)=>{
             if(response.ok){
@@ -157,25 +233,23 @@
             }
           });
         };
-        // const url = new URL(rows[0].url);
-        const searchParams = myur
-        // const searchParams = new URLSearchParams(location.search);
-            console.log(searchParams.get('nama'));
-        fetch(`/api/class/${searchParams.get("nama_pengajar")}`)
+        fetch("/api/class/home/pengajar")
           .then((response)=> response.json())
             .then((kelas) => {
-                for(let i=0;i<kelas.length;i++) {
+              console.log(kelas);
+                kelas.forEach((k)=> {
+                  console.log(kelas);
                   const div1 = document.createElement("div");
                   div1.className = "card";
                   const atas = document.createElement("img");
                   atas.src='/assets/atas.jpg';
                   const namaKelas= document.createElement("a");
-                  namaKelas.textContent=kelas[i].nama_kelas;
-                  namaKelas.href="/tambah";
+                  namaKelas.textContent=k.nama_kelas;
+                  namaKelas.href="/pengajar";
                   const pelajaran= document.createElement("a");
-                  pelajaran.textContent=kelas[i].mata_pelajaran;
+                  pelajaran.textContent=k.mata_pelajaran;
                   const ruangan= document.createElement("a");
-                  ruangan.textContent=`(${kelas[i].ruangan})`;
+                  ruangan.textContent=`(${k.ruangan})`;
                   const bawah = document.createElement("img");
                   bawah.src='/assets/bawah.jpg'; 
 
@@ -183,17 +257,17 @@
                   const edit = document.createElement("button");
                   const editText= document.createElement("a");
                   editText.textContent="Edit";
-                  editText.href=`/edit?nama_kelas=${kelas[i].nama_kelas}`;
+                  editText.href=`/edit?nama_kelas=${k.nama_kelas}`;
                   const dlt = document.createElement("button");
                   const dltText= document.createElement("a");
                   dltText.textContent = "Delete";
                   dlt.onclick = () => {
                         if (
                             confirm(
-                                `Apakah Anda yakin ingin menghapus ${kelas[i].nama_kelas} (${kelas[i].nama_pengajar})?`
+                                `Apakah Anda yakin ingin menghapus ${k.nama_kelas} (${k.nama_pengajar})?`
                             )
                         ) {
-                            fetch(`/api/class/${kelas[i].nama_kelas}`, {
+                            fetch(`/api/class/${k.nama_kelas}`, {
                                 method: "DELETE",
                                 headers: {
                                     Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -215,7 +289,7 @@
                   div1.appendChild(bawah);
                   document.querySelector("#container").appendChild(div1);
                   document.querySelector("#container").appendChild(cardButton);
-                };
+                });
             });
     </script>
 </body>

@@ -13,7 +13,7 @@ import bcrypt from "bcryptjs";
 
 const app = express();
 
-const upload = multer({ dest: "public/asse" });
+const upload = multer({ dest: "public/tugas" });
 
 
 // MIDDLEWARE
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
     let authorized = false;
     if (req.cookies.token) {
       try {
-        jwt.verify(req.cookies.token, process.env.SECRET_KEY);
+        req.me = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
         authorized = true;
       } catch (err) {
         res.setHeader("Cache-Control", "no-store"); // khusus Vercel
@@ -102,20 +102,59 @@ app.post("/api/login", async (req, res) => {
     }
   } else {
     res.status(401);
-    res.send("Mahasiswa tidak ditemukan.");
+    res.send("Akun tidak ditemukan.");
   }
 });
 
-app.get("/api/class/:nama_pengajar",async (req,res)=>{
-    const results= await client.query(`SELECT * FROM data_class where nama_pengajar ='${req.params.nama_pengajar}' ORDER BY no_ruangan `);
+app.get("/api/me",async (req,res)=>{
+    const results= await client.query(`SELECT * FROM data_class INNER JOIN data_user  ON data_class.code_class = data_user.code_class where data_class.nama_pengajar ='${req.me.nama}' and data_class.code_class = data_user.code_class `);
+    req.me = results.rows;
+    res.json(req.me);
+});
+app.get("/api/all",async (req,res)=>{
+    const results= await client.query(`SELECT * FROM data_class INNER JOIN data_user ON data_class.code_class = data_user.code_class`);
+    req.me = results.rows;
+    res.json(req.me);
+});
+app.get("/api/me2",async (req,res)=>{
+    const results= await client.query(`SELECT * FROM data_class WHERE nama_pengajar ='${req.me.nama}'`);
+    req.me = results.rows;
+    res.json(req.me);
+});
+app.get("/api/tugas",async (req,res)=>{
+  const results= await client.query(`SELECT * FROM penilaian`);
+  res.json(results.rows);
+})
+app.post("/api/join", async (req,res) => {
+  await client.query(
+    `INSERT INTO data_user (nama, password, code_class) VALUES ('${req.me.nama}','${req.me.password}','${req.body.code_class}')`
+  );
+  res.send("Code Masuk");
+});
+app.post("/api/tugas",upload.single("tugas"),async(req,res)=>{
+  await client.query(
+    `INSERT INTO penilaian (tugas,pengumuman,nama_pengajar) VALUES ('${req.file.originalname}','${req.body.pengumuman}','${req.body.nama_pengajar}')`
+  );
+  res.send("Tugas Masuk");
+});
+
+app.get("/api/user", async (req,res)=>{
+  const results = await client.query(`SELECT * FROM data_class where code_class ='${req.me.code_class}'`);
+  res.json(results.rows);
+});
+app.get("/api/class/home",async (req,res)=>{
+    const results= await client.query(`SELECT * FROM data_class INNER JOIN data_user ON data_class.code_class = data_user.code_class AND data_user.nama = '${req.me.nama}'`);
+    res.json(results.rows);
+});
+app.get("/api/class/home/pengajar",async (req,res)=>{
+    const results= await client.query(`SELECT * FROM data_class WHERE nama_pengajar = '${req.me.nama}'`);
     res.json(results.rows);
 });
 app.post("/api/class",async (req,res)=>{ 
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(req.body.password, salt);
-    const hash2 = await bcrypt.hash(req.body.code_class, salt);
     await client.query(
-      `INSERT INTO data_class (nama_kelas, nama_pengajar, mata_pelajaran,ruangan,no_ruangan, password, code_class) VALUES ('${req.body.nama_kelas}', '${req.body.nama_pengajar}', '${req.body.mata_pelajaran}', '${req.body.ruangan}', '${req.body.no_ruangan}', '${hash}','${hash2}')`
+      `INSERT INTO data_class (nama_kelas, nama_pengajar, mata_pelajaran,ruangan,no_ruangan, password, code_class) VALUES ('${req.body.nama_kelas}', '${req.me.nama}', '${req.body.mata_pelajaran}', '${req.body.ruangan}', '${req.body.no_ruangan}', '${hash}','${req.body.code_class}')`
     );
     res.send("Class Berhasil Dibuat");
 });
@@ -123,13 +162,17 @@ app.put("/api/class/:nama_kelas",async (req,res)=>{
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(req.body.password, salt);
     await client.query(
-      `UPDATE data_class SET nama_kelas = '${req.body.nama_kelas}', nama_pengajar = '${req.body.nama_pengajar}', mata_pelajaran = '${req.body.mata_pelajaran}', ruangan = '${req.body.ruangan}', password = '${hash}', no_ruangan = '${req.body.no_ruangan}' WHERE nama_kelas = '${req.params.nama_kelas}'`
+      `UPDATE data_class SET nama_kelas = '${req.body.nama_kelas}', nama_pengajar = '${req.me.nama}', mata_pelajaran = '${req.body.mata_pelajaran}', ruangan = '${req.body.ruangan}', password = '${hash}', no_ruangan = '${req.body.no_ruangan}' WHERE nama_kelas = '${req.params.nama_kelas}'`
     );
     res.send("class berhasil Diedit");
 });
 app.delete("/api/class/:nama_kelas", async(req,res)=>{
-    const results= await client.query(`DELETE FROM data_class WHERE nama_kelas='${req.params.nama_kelas}'`);
+    await client.query(`DELETE FROM data_class WHERE nama_kelas='${req.params.nama_kelas}'`);
     res.send("Class Berhasil Dihapus");
+});
+app.delete("/api/user/:code_class", async(req,res)=>{
+  await client.query(`DELETE FROM data_user WHERE code_class='${req.params.code_class}'`);
+  res.send("Class Berhasil Dihapus");
 });
 app.get("/api/logout",(req,res)=> {
   res.setHeader("Cache-Control", "no-store");

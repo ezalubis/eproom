@@ -106,7 +106,6 @@ span {
             </div>
 			<form name="tambah" class="input-group">
 				<input type="text" class="input-field" placeholder="Class Name" name="cn" required />
-				<input type="text" class="input-field" placeholder="Your Name" name="yn"  required />
 				<input type="text" class="input-field" placeholder="Subjects" name="s"  required />
 				<input type="text" class="input-field" placeholder="Room Name" name="rn"  required />
 				<input type="text" class="input-field" placeholder="Password" name="ps"  required />
@@ -128,7 +127,6 @@ span {
             },
             body: JSON.stringify({
                 nama_kelas : document.tambah.cn.value,
-                nama_pengajar : document.tambah.yn.value,
                 mata_pelajaran : document.tambah.s.value,
                 ruangan : document.tambah.rn.value,
                 password : document.tambah.ps.value,

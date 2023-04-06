@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EProom</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>  
+    <ul>
+        <div id="atas">
+            <li><a href="/pengajar/tugas/">TUGAS</a></li>
+            <div><a href="/pengajar"><img src="/assets/ep.png" class="logo"></a></div>
+            <li><a href="/pengajar/orang">ORANG</a></li>
+        </div>
+    </ul>
+    <div class="cont">
+        <div class="judul">
+            <img src="/assets/logo1.png">
+        </div> 
+    </div>
+    <div class="anime">
+       <a href="/"><img src="/assets/guru.png" class="guru"></a>
+    </div>
+    <div class="code">
+        <h2>Code Class : </h2> 
+    </div>
+    <div class="penginput">
+        <form name="tugas" id="form">
+        <h2>Umumkan Sesuatu Dikelas</h2>
+        <input type="text" placeholder="Tulis Disini Bang Messi" id="text" name="pengumuman">
+        <label>
+            <input type="file" name="tugas">
+        <button id="kirim">Kirim</button>
+        </label>
+        </form>
+    </div>
+    <!-- <div class="penginput">
+        <form name="tugas" id="form">
+        <h2>Umumkan Sesuatu Dikelas</h2>
+        </form>
+    </div> -->
+    <script>
+        const kirim = document.querySelector("#kirim");
+        document.tugas.onsubmit = async(e) => {
+          e.preventDefault();
+            const userInput = prompt("Masukkan Nama Pengirim: ");
+            kirim.value = userInput;
+            const data = new FormData();
+            data.append("tugas", document.tugas.tugas.files[0]);
+            data.append("pengumuman", document.tugas.pengumuman.value);
+            data.append("nama_pengajar", kirim.value);
+            await fetch("/api/tugas", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: data,
+          }).then(async (response) => {
+            if (response.ok) {
+              location.href = "/pengajar";
+            } else {
+              const message = await response.text();
+              alert(message);
+            }
+          });
+        };
+        // fetch("/api/tugas")
+        //     .then((response)=> response.json())
+        //         .then((data)=>{
+        //             const cont = document.querySelector(".penginput");
+        //             const form = document.querySelector("#form");
+        //             data.forEach((d)=>{
+        //                 const txt = document.createElement("input");
+        //                 txt.placeholder="Tulis Disini Bang Messi";
+        //                 txt.type="text";
+        //                 txt.id="text";
+        //                 txt.name="pengumuman";
+        //                 const label = document.createElement("label");
+        //                 const tugas = document.createElement("input");
+        //                 tugas.type = "file";
+        //                 tugas.name = "tugas";
+        //                 const btn = document.createElement("button");    
+        //                 button.id="kirim";
+        //                 button.textContent="Kirim";
+        //                 form.appendChild(txt);
+        //                 form.appendChild(label);
+        //                 form.appendChild(tugas);
+        //                 form.appendChild(btn);
+        //                 cont.appendChild(form);
+        //             });
+        //         });
+        fetch("/api/class/home/pengajar")
+            .then((response) => response.json())
+              .then((data) =>{
+                data.forEach((d)=>{
+                    const divP = document.createElement("div");
+                    divP.className = "divP";
+                    const divP2 = document.createElement("div");
+                    divP2.className = "divP2";
+                    const code = document.createElement("h1");
+                    code.textContent = d.code_class;
+                    document.querySelector(".code").appendChild(code); 
+                    const namaKelas = document.createElement("h1");
+                    namaKelas.textContent = d.nama_kelas; 
+                    const pelajaran= document.createElement("h1");
+                    pelajaran.textContent = `(${d.mata_pelajaran})`; 
+                    const ruangan= document.createElement("h1");
+                    ruangan.textContent = d.ruangan; 
+                    const noRuangan = document.createElement("h1");
+                    noRuangan.textContent = `(${d.no_ruangan})`;
+                    divP.appendChild(namaKelas);
+                    divP.appendChild(pelajaran);
+                    divP2.appendChild(ruangan);
+                    divP2.appendChild(noRuangan);
+
+                    document.querySelector(".judul").appendChild(divP);
+                    document.querySelector(".judul").appendChild(divP2);
+                });
+              });
+    </script>
+</body>
+</html>

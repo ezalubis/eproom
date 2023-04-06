@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EProom</title>
+    <style>
+        body {
+            margin:0;
+        }    
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            /* padding-left: 480px; */
+            overflow: hidden;
+            background-color: rgb(169,23,23);
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+        
+        li {
+            float: left;
+        }
+        #atas{
+            display: flex;
+            flex-wrap: nowrap;
+            padding-left: 480px;
+        }
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            width: 100px;
+        }
+        
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+        
+        .active {
+            background-color: #04AA6D;
+        }
+        .logo{
+            max-width: 100px;
+        }
+        .judul{
+            display: flex;
+            flex-direction: row;
+            background-image: url("/assets/walpaper.jpg");
+            max-width: 970px;
+            height: 150px;
+            margin-left: 130px;
+            margin-top: 100px;
+            padding-left: 130px;
+            padding-top: 100px;
+            border-radius: 5px;
+        }
+        .judul > img{
+            position: relative;
+            bottom: 90px;
+            left: 790px;
+        }
+
+        .code{
+            border: 2px solid;
+            max-width: 150px;
+            height: 150px;
+            background-color: black;
+            color: white;
+            position: absolute;
+            left: 130px;
+            right: 130px;
+            border-radius: 5px;
+        }
+        .penginput{
+            margin-top: 2px;
+            border-radius: 5px;
+            border: 2px solid;
+            max-width: 925px;
+            height: 150px;
+            background-color: white;
+            position: relative;
+            left: 300px;
+            right: 130px;
+            margin-bottom: 20px;
+        }
+        .guru{
+            position: absolute;
+            max-width: 150px;
+            height: 150px;
+        }
+        .penginput > #text{
+            position: absolute;
+            left: 0px;
+            top: 50px;
+            width: 900px;
+            border: transparent;
+            height: 50px;
+        }
+        .penginput > label{
+            position: absolute;
+            top: 120px;
+            left: 550px;
+        } 
+        .penginput > img {
+            margin-left: 870px;
+        }
+        h2{
+            position: absolute;
+            top: -20px;
+        }
+        .code > h1{
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+        .divP{
+            display: flex;
+            flex-direction: row;
+            color: white;
+            position: absolute;
+            left: 130px;
+            top: 290px;
+        }
+        .divP2{
+            display: flex;
+            flex-direction: row;
+            color: white;
+            position: relative;
+            padding-left: 800px;
+            top: 90px;
+        }
+    </style>
+</head>
+<body>       
+    <ul>
+        <div id="atas">
+            <li><a href="../../">TUGAS</a></li>
+            <div><a href="/murid"><img src="/assets/ep.png" class="logo"></a></div>
+            <li><a href="ORANG">ORANG</a></li>
+        </div>
+    </ul>
+    <div class="judul">
+    </div> 
+    <div class="anime">
+        <a href="/"><img src="/assets/logo3.png" class="guru"></a>
+    </div>
+    <div class="code">
+        <h2>Pengajar : </h2> 
+    </div> 
+    <div class="penginput">
+        <h2>Umumkan Sesuatu Dikelas</h2>
+        <img src="/assets/logo1.png">
+        <input type="text" placeholder="Tulis Disini Bang Messi" id="text">
+        <label>
+            <input type="file" name="tugas">
+        <button id="kirim">Kirim</button>
+        </label>
+    </div>
+    </div>
+    <script>
+        fetch("/api/class/home")
+            .then((response) => response.json())
+              .then((data) =>{
+                data.forEach((d)=>{
+                    const divP = document.createElement("div");
+                    divP.className = "divP";
+                    const divP2 = document.createElement("div");
+                    divP2.className = "divP2";
+                    const namaPengajar= document.createElement("h1");
+                    namaPengajar.textContent = d.nama_pengajar;
+                    document.querySelector(".code").appendChild(namaPengajar); 
+                    const namaKelas = document.createElement("h1");
+                    namaKelas.textContent = d.nama_kelas; 
+                    const pelajaran= document.createElement("h1");
+                    pelajaran.textContent = `(${d.mata_pelajaran})`; 
+                    const ruangan= document.createElement("h1");
+                    ruangan.textContent = d.ruangan; 
+                    const noRuangan = document.createElement("h1");
+                    noRuangan.textContent = `(${d.no_ruangan})`;
+                    divP.appendChild(namaKelas);
+                    divP.appendChild(pelajaran);
+                    divP2.appendChild(ruangan);
+                    divP2.appendChild(noRuangan);
+
+                    document.querySelector(".judul").appendChild(divP);
+                    document.querySelector(".judul").appendChild(divP2);
+                });
+              });
+    </script>
+</body>
+</html>
