@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import multer from "multer";
 import { client } from "./db.js";
 
 import jwt from "jsonwebtoken";
@@ -12,8 +11,6 @@ import bcrypt from "bcryptjs";
 // console.log(searchParams.get("nama_pengajar"));
 
 const app = express();
-
-const upload = multer({ dest: "public/tugas" });
 
 
 // MIDDLEWARE
@@ -131,7 +128,7 @@ app.post("/api/join", async (req,res) => {
   );
   res.send("Code Masuk");
 });
-app.post("/api/tugas",upload.single("tugas"),async(req,res)=>{
+app.post("/api/tugas",async(req,res)=>{
   await client.query(
     `INSERT INTO penilaian (tugas,pengumuman,nama_pengajar) VALUES ('${req.file.originalname}','${req.body.pengumuman}','${req.body.nama_pengajar}')`
   );
