@@ -96,15 +96,15 @@
             max-width: 150px;
             height: 150px;
         }
-        .penginput > #text{
+        #text{
             position: absolute;
             left: 0px;
-            top: 50px;
+            top: 30px;
             width: 900px;
             border: transparent;
             height: 50px;
         }
-        .penginput > label{
+        label{
             position: absolute;
             top: 120px;
             left: 550px;
@@ -142,9 +142,9 @@
 <body>       
     <ul>
         <div id="atas">
-            <li><a href="../../">TUGAS</a></li>
+            <li><a href="/murid/tugas">TUGAS</a></li>
             <div><a href="/murid"><img src="/assets/ep.png" class="logo"></a></div>
-            <li><a href="ORANG">ORANG</a></li>
+            <li><a href="/murid/orang">ORANG</a></li>
         </div>
     </ul>
     <div class="judul">
@@ -156,16 +156,34 @@
         <h2>Pengajar : </h2> 
     </div> 
     <div class="penginput">
+        <form name="tugas" id="form">
         <h2>Umumkan Sesuatu Dikelas</h2>
-        <img src="/assets/logo1.png">
-        <input type="text" placeholder="Tulis Disini Bang Messi" id="text">
+        <input type="text" placeholder="Tulis Disini Bang Messi" id="text" name="tugas">
         <label>
-            <input type="file" name="tugas">
         <button id="kirim">Kirim</button>
         </label>
-    </div>
+        </form>
     </div>
     <script>
+        document.tugas.onsubmit = (e) => {
+          e.preventDefault();
+          fetch("/api/tugas/murid", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                tugas : document.tugas.tugas.value
+            }),
+          }).then(async (response) => {
+            if (response.ok) {
+              location.href = "/murid";
+            } else {
+              const message = await response.text();
+              alert(message);
+            }
+          });
+        };
         fetch("/api/class/home")
             .then((response) => response.json())
               .then((data) =>{

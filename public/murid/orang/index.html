@@ -36,8 +36,8 @@
     <ul>
         <div id="atas">
             <li><a href="../../">TUGAS</a></li>
-            <div><a href="/pengajar"><img src="/assets/ep.png" class="logo"></a></div>
-            <li><a href="/pengajar/orang">ORANG</a></li>
+            <div><a href="/murid"><img src="/assets/ep.png" class="logo"></a></div>
+            <li><a href="/murid/orang">ORANG</a></li>
         </div>
     </ul>
     <div class="shiina"><img src="/assets/shiina.png"></div>
@@ -60,15 +60,24 @@
                     document.querySelector(".pengajar").appendChild(nama);
                 });
               });
-        fetch("/api/class/home")
+        
+        // const join = document.createElement("text");
+
+        // join.onclick=(e)=>{
+        // const join;
+        const code = prompt("Masukkan code kelas : ");
+        // join.value = userInput;
+        fetch(`/api/me3/${code}`)
             .then((response) => response.json())
-              .then((data) =>{
+                .then((data) =>{
+                    console.log(data);
                 data.forEach((d)=>{
                     const siswa = document.createElement("h2");
                     siswa.textContent = d.nama;
                     document.querySelector(".murid").appendChild(siswa);
                 });
               });
+        // }
     </script>
 </body>
 </html>

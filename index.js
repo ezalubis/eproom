@@ -110,8 +110,18 @@ app.post("/api/login", async (req, res) => {
 
 app.get("/api/me",async (req,res)=>{
     const results= await client.query(`SELECT * FROM data_class INNER JOIN data_user  ON data_class.code_class = data_user.code_class where data_class.nama_pengajar ='${req.me.nama}' and data_class.code_class = data_user.code_class `);
-    req.me = results.rows;
-    res.json(req.me);
+    // req.me = results.rows;
+    res.json(results.rows);
+});
+app.get("/api/class/home",async (req,res)=>{
+    const results= await client.query(
+      `SELECT * FROM data_class INNER JOIN data_user ON data_class.code_class = data_user.code_class AND data_user.nama = '${req.me.nama}'`);
+      res.json(results.rows);
+});
+app.get("/api/me3/:code_class",async (req,res)=>{
+    const results= await client.query(`SELECT * FROM data_user JOIN data_class ON data_class.code_class = data_user.code_class WHERE data_user.code_class ='${req.params.code_class}'`);
+    // req.me = results.rows;
+    res.json(results.rows);
 });
 app.get("/api/all",async (req,res)=>{
     const results= await client.query(`SELECT * FROM data_class INNER JOIN data_user ON data_class.code_class = data_user.code_class`);
@@ -127,6 +137,10 @@ app.get("/api/tugas",async (req,res)=>{
   const results= await client.query(`SELECT * FROM penilaian`);
   res.json(results.rows);
 })
+app.get("/api/tugas/murid",async (req,res)=>{
+  const results= await client.query(`SELECT * FROM tugas`);
+  res.json(results.rows);
+})
 app.post("/api/join", async (req,res) => {
   await client.query(
     `INSERT INTO data_user (nama, password, code_class) VALUES ('${req.me.nama}','${req.me.password}','${req.body.code_class}')`
@@ -135,17 +149,25 @@ app.post("/api/join", async (req,res) => {
 });
 app.post("/api/tugas",async(req,res)=>{
   await client.query(
-    `INSERT INTO penilaian (tugas,pengumuman,nama_pengajar) VALUES ('${req.file.originalname}','${req.body.pengumuman}','${req.body.nama_pengajar}')`
+    `INSERT INTO penilaian (pengumuman) VALUES ('${req.body.pengumuman}')`
   );
-  res.send("Tugas Masuk");
+  res.send("Tugas Telah Masuk");
 });
-
-app.get("/api/user", async (req,res)=>{
-  const results = await client.query(`SELECT * FROM data_class where code_class ='${req.me.code_class}'`);
-  res.json(results.rows);
+app.post("/api/tugas/murid",async(req,res)=>{
+  await client.query(
+    `INSERT INTO tugas (tugas) VALUES ('${req.body.tugas}')`
+  );
+  res.send("Tugas Telah Masuk");
 });
-app.get("/api/class/home",async (req,res)=>{
-    const results= await client.query(`SELECT * FROM data_class INNER JOIN data_user ON data_class.code_class = data_user.code_class AND data_user.nama = '${req.me.nama}'`);
+app.get("/api/class/orang",async (req,res)=>{
+    const results= await client.query(
+      `SELECT * FROM data_user INNER JOIN data_class ON data_class.code_class = data_user.code_class AND data_class.nama_pengajar = '${req.me.nama}'`);
+    req.me = results.rows;
+    res.json(req.me);
+});
+app.get("/api/class/murid/:code_class",async (req,res)=>{
+    const results= await client.query(
+      `SELECT * FROM data_user WHERE code_class ='${req.params.code_class}'`);
     res.json(results.rows);
 });
 app.get("/api/class/home/pengajar",async (req,res)=>{
@@ -173,8 +195,8 @@ app.delete("/api/class/:nama_kelas", async(req,res)=>{
     res.send("Class Berhasil Dihapus");
 });
 app.delete("/api/user/:code_class", async(req,res)=>{
-  await client.query(`DELETE FROM data_user WHERE code_class='${req.params.code_class}'`);
-  res.send("Class Berhasil Dihapus");
+  await client.query(`DELETE FROM data_user WHERE nama ='${req.me.nama}' AND code_class ='${req.params.code_class}'`);
+  res.send("Berhasil keluar kelas");
 });
 app.get("/api/logout",(req,res)=> {
   res.setHeader("Cache-Control", "no-store");
@@ -182,6 +204,6 @@ app.get("/api/logout",(req,res)=> {
   res.send("Logout berhasil.");
 })
 
-app.listen(3002,()=>{
+app.listen(3000,()=>{
     console.log("gasskeunnn");
 })

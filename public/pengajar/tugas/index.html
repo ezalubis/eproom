@@ -15,12 +15,12 @@
             max-width: 500px;
             height: 300px;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
         }
         h2{
-            margin-top: 80px;
-            margin-left: -100px;
             position: relative;
+            margin-left: 100px;
+            margin-bottom: -10px;
         }
         .koro{
             position: fixed;
@@ -31,9 +31,6 @@
             width: 400px;
             height: 300px;
             margin-top: 80px;
-        }
-        .memek{
-            border: 5px solid;
         }
     </style>
 </head>
@@ -49,36 +46,20 @@
     <div class="container">
         <div class="tugas">
             <h1>TUGAS: </h1>
-            <object type="application/pdf" id="objek"></object>
         </div>
     </div>
     <script>
         fetch("/api/tugas")
             .then((response)=> response.json())
-                .then((dataa) =>{
+                .then((data) =>{
                     const tugas = document.querySelector(".tugas");
-                    const dataObjek = document.querySelector("#objek");
-                    for(let d=0;d<dataa.length;d++){
-                        const div = document.createElement("div");
-                        div.className="memek";                        
-                        const nama = document.createElement("h2");
-                        nama.textContent = dataa[d].nama_pengajar;
-                        const dataObjek = document.querySelector("#objek");
-                        const tampungan = dataa[d].tugas.split("9. ")[1];
-                        console.log(tampungan);
-                        // dataObjek.data= `/tugas/${tampungan}`;
-                        dataObjek.data=`/assets/su.pdf`;
-                        // const kontol = document.createElement("object");
-                        // kontol.type="application/pdf";
-                        // kontol.data=`/tugas/${dataa[d].tugas}`;
-                        // div.appendChild(dataObjek);
-                        // tugas.appendChild(div);
-
-                        // console.log(dataObjek.data);
-                        // dataObjek.src = `/tugas/${data[d].tugas}`;
-                        tugas.appendChild(nama);
-                        tugas.appendChild(dataObjek);
-                    };
+                    data.forEach((d)=>{
+                        const div = document.createElement("div");                       
+                        const pengumuman = document.createElement("h2");
+                        pengumuman.textContent = `- ${d.pengumuman}`;
+                        div.appendChild(pengumuman)
+                        tugas.appendChild(div);
+                    });
                 });
     </script>
 </body>

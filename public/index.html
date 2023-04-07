@@ -83,7 +83,7 @@
   }
   #container{
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: row;
         border: 5px solid;
     }
     #container > div{   
@@ -98,19 +98,16 @@
       margin: 5px;
       display: flex;
       align-items: flex-start;
+      flex-wrap:wrap ;
     }
     #logo2{
         max-width: 280px;
     }
     .card{
-        max-width: 280px;
         max-height: 400px;
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         border: 5px solid;
-    }
-    .card > img{
-      width: 280px;
     }
     .card > div{
         width: 500px;
@@ -125,12 +122,16 @@
         border-radius: 5px;
         cursor: pointer;
     }
+    .card > .cardBtn{
+      background-image: url("/assets/atas.jpg");
+      width: 100%;
+    }
     /* button{
 
     } */
-    #button:hover {
+    /* #button:hover {
         background-color: #00b28f;
-    }
+    } */
   </style>
 </head>
 <body>
@@ -197,6 +198,7 @@
                   const cardButton = document.createElement("div");
                   const dlt = document.createElement("button");
                   const dltText= document.createElement("a");
+                  cardButton.className="cardBtn";
                   dltText.textContent = "Leave";
                   dlt.onclick = () => {
                         if (
@@ -217,13 +219,14 @@
                   dlt.appendChild(dltText);
                   cardButton.appendChild(dlt);
 
-                  div1.appendChild(atas);
+                  // div1.appendChild(atas);
+                  div1.appendChild(cardButton);
                   div1.appendChild(namaKelas);
                   div1.appendChild(ruangan);
                   div1.appendChild(pelajaran);   
                   div1.appendChild(bawah);
                   document.querySelector("#container").appendChild(div1);
-                  document.querySelector("#container").appendChild(cardButton);
+                  // document.querySelector("#container").appendChild(cardButton);
                 });
             });
         logout.onclick = ()=>{
@@ -260,6 +263,7 @@
                   editText.href=`/edit?nama_kelas=${k.nama_kelas}`;
                   const dlt = document.createElement("button");
                   const dltText= document.createElement("a");
+                  cardButton.className="cardBtn";
                   dltText.textContent = "Delete";
                   dlt.onclick = () => {
                         if (
@@ -282,13 +286,12 @@
                   cardButton.appendChild(edit);
                   cardButton.appendChild(dlt);
 
-                  div1.appendChild(atas);
+                  div1.appendChild(cardButton);
                   div1.appendChild(namaKelas);
                   div1.appendChild(ruangan);
                   div1.appendChild(pelajaran);   
                   div1.appendChild(bawah);
                   document.querySelector("#container").appendChild(div1);
-                  document.querySelector("#container").appendChild(cardButton);
                 });
             });
     </script>

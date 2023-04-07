@@ -31,32 +31,21 @@
         <h2>Umumkan Sesuatu Dikelas</h2>
         <input type="text" placeholder="Tulis Disini Bang Messi" id="text" name="pengumuman">
         <label>
-            <input type="file" name="tugas">
         <button id="kirim">Kirim</button>
         </label>
         </form>
     </div>
-    <!-- <div class="penginput">
-        <form name="tugas" id="form">
-        <h2>Umumkan Sesuatu Dikelas</h2>
-        </form>
-    </div> -->
     <script>
-        const kirim = document.querySelector("#kirim");
-        document.tugas.onsubmit = async(e) => {
+        document.tugas.onsubmit = (e) => {
           e.preventDefault();
-            const userInput = prompt("Masukkan Nama Pengirim: ");
-            kirim.value = userInput;
-            const data = new FormData();
-            data.append("tugas", document.tugas.tugas.files[0]);
-            data.append("pengumuman", document.tugas.pengumuman.value);
-            data.append("nama_pengajar", kirim.value);
-            await fetch("/api/tugas", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: data,
+          fetch("/api/tugas", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                pengumuman : document.tugas.pengumuman.value
+            }),
           }).then(async (response) => {
             if (response.ok) {
               location.href = "/pengajar";
@@ -66,31 +55,6 @@
             }
           });
         };
-        // fetch("/api/tugas")
-        //     .then((response)=> response.json())
-        //         .then((data)=>{
-        //             const cont = document.querySelector(".penginput");
-        //             const form = document.querySelector("#form");
-        //             data.forEach((d)=>{
-        //                 const txt = document.createElement("input");
-        //                 txt.placeholder="Tulis Disini Bang Messi";
-        //                 txt.type="text";
-        //                 txt.id="text";
-        //                 txt.name="pengumuman";
-        //                 const label = document.createElement("label");
-        //                 const tugas = document.createElement("input");
-        //                 tugas.type = "file";
-        //                 tugas.name = "tugas";
-        //                 const btn = document.createElement("button");    
-        //                 button.id="kirim";
-        //                 button.textContent="Kirim";
-        //                 form.appendChild(txt);
-        //                 form.appendChild(label);
-        //                 form.appendChild(tugas);
-        //                 form.appendChild(btn);
-        //                 cont.appendChild(form);
-        //             });
-        //         });
         fetch("/api/class/home/pengajar")
             .then((response) => response.json())
               .then((data) =>{

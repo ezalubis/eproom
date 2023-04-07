@@ -1,30 +1,28 @@
-CREATE DATABASE classroom;
-CREATE TABLE pendaftar(
-	id SERIAL PRIMARY KEY,
-	nama TEXT,
-	PASSWORD TEXT
+create table pendaftar(
+	id SERIAL primary KEY,
+	nama text,
+	password text
 );
-CREATE TABLE data_user(
-	id SERIAL PRIMARY KEY,
-	code_class TEXT,
-	nama TEXT,
-	PASSWORD TEXT
+create table data_user(
+	id SERIAL primary KEY,
+	code_class text,
+	nama text,
+	password text
 );
-CREATE TABLE penilaian(
-	id SERIAL PRIMARY KEY,
-	tugas TEXT,
-	mata_pelajaran TEXT,
-	nama_siswa TEXT,
-	pengumuman TEXT,
-	nama_pengajar TEXT,
-	nama_kelas TEXT
+create table data_class(
+	code_class primary KEY,
+	nama_kelas text,
+	nama_pengajar text,
+	mata_pelajaran text,
+	ruangan text,
+	password text,
+	no_ruangan int
 );
-CREATE TABLE penilaian(
-	code_class TEXT PRIMARY KEY,
-	nama_kelas TEXT,
-	nama_pengajar TEXT,
-	mata_pelajaran TEXT,
-	ruangan TEXT,
-	PASSWORD TEXT,
-	no_ruangan INT
+create table penilaian(
+	id SERIAL primary key,
+	pengumuman text
+);
+create table tugas(
+	id SERIAL primary key,
+	tugas text
 );
